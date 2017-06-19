@@ -1,15 +1,16 @@
 # JKS private key cracker - Nail in the JKS coffin
 
-The Java Key Store (JKS) is the Java way of storing one or several cryptographic private and public keys for asymmetric cryptography in a file. While there are various key store formats, Java and Android still default to the JKS file format. JKS is one of the file formats for Java key stores, but JKS is confusingly used as the acronym for the general Java key store API as well. This project explains the security mechanisms of the JKS file format and how the password protection of the private key can be cracked. Due the unusual design of JKS the developed implementation can ignore the key store password and crack the private key password directly. Because it ignores the key store password, this implementation can attack every JKS configuration, which is not the case with most other tools. By exploiting a weakness of the Password Based Encryption scheme for the private key in JKS, passwords can be cracked very efficiently. Until now, no public tool was available exploiting this weakness. This technique was implemented in hashcat to amplify the efficiency of the algorithm with higher cracking speeds on GPUs.
+The Java Key Store (JKS) is the Java way of storing one or several cryptographic private and public keys for asymmetric cryptography in a file. While there are various key store formats, Java and Android still default to the JKS file format. JKS is one of the file formats for Java key stores, but JKS is confusingly used as the acronym for the general Java key store API as well. This project includes information regarding the security mechanisms of the JKS file format and how the password protection of the private key can be cracked. Due the unusual design of JKS the developed implementation can ignore the key store password and crack the private key password directly. Because it ignores the key store password, this implementation can attack every JKS configuration, which is not the case with most other tools. By exploiting a weakness of the Password Based Encryption scheme for the private key in JKS, passwords can be cracked very efficiently. Until now, no public tool was available exploiting this weakness. This technique was implemented in hashcat to amplify the efficiency of the algorithm with higher cracking speeds on GPUs.
 
-To get the theory part, please refer to the POC||GTFO article "Nail in the JKS coffin" in issue 0x15 included in this repository or available on various mirros like this beautiful one: https://unpack.debug.su/pocorgtfo/
+To get the theory part, please refer to the POC||GTFO article "15:12 Nail in the Java Key Store Coffin" in issue 0x15 included in this repository (pocorgtfo15.pdf) or available on various mirros like this beautiful one: https://unpack.debug.su/pocorgtfo/
 
-Before you ask: JCEKS or BC or any other Key Store format is not supported (yet).
+Before you ask: JCEKS or BKS or any other Key Store format is not supported (yet).
 
 # How you should crack JKS files
 
 The answer is build your own cracking hardware for it ;) . But let's be a little more practical, so the answer is using your GPU:
 
+```
     _____:  _____________         _____:  v3.6.0     ____________
    _\    |__\______    _/_______ _\    |_____ _______\______    /__ ______
    |     _     |  __   \   ____/____   _     |   ___/____  __    |_______/
@@ -18,6 +19,7 @@ The answer is build your own cracking hardware for it ;) . But let's be a little
          |_____:-aTZ!/___________/     |_____:                 /_______:
  
 * BLAKE2 * BLOCKCHAIN2 * DPAPI * CHACHA20 * JAVA KEYSTORE * ETHEREUM WALLET *
+```
 
 All you need to do is run the following command:
 
@@ -25,9 +27,9 @@ All you need to do is run the following command:
 java -jar JksPrivkPrepare.jar your_JKS_file.jks > hash.txt
 ```
 
-If you hash.txt ends up being empty, there is either no private key in the JKS file or you specified a non-JKS file.
+If your hash.txt ends up being empty, there is either no private key in the JKS file or you specified a non-JKS file.
 
-Then feed the hashes file to hashcat (version 3.6.0 and above), for example like this:
+Then feed the hash.txt file to hashcat (version 3.6.0 and above), for example like this:
 
 ```
 $ ./hashcat -m 15500 -a 3 -1 '?u|' -w 3 hash.txt ?1?1?1?1?1?1?1?1?1
@@ -134,4 +136,4 @@ Various more information which are mentioned in the article as well:
 * https://hashcat.net/events/p12/js-sha1exp_169.pdf
 * https://github.com/hashcat/hashcat
 
-Neighborly greetings go out to atom, vollkorn, cem, doegox, corkami, xonox and rexploit for supporting this article in one form or another!
+Neighborly greetings go out to atom, vollkorn, cem, doegox, corkami, xonox and rexploit for supporting this research in one form or another!
