@@ -29,7 +29,7 @@ java -jar JksPrivkPrepare.jar your_JKS_file.jks > hash.txt
 
 If your hash.txt ends up being empty, there is either no private key in the JKS file or you specified a non-JKS file.
 
-Then feed the hash.txt file to hashcat (version 3.6.0 and above), for example like this:
+Then feed the hash.txt file to hashcat (version 3.6.0 and above, but if you want to be on the safe side and also make sure you can crack very long passwords please use at least version 4 of hashcat!), for example like this:
 
 ```
 $ ./hashcat -m 15500 -a 3 -1 '?u|' -w 3 hash.txt ?1?1?1?1?1?1?1?1?1
